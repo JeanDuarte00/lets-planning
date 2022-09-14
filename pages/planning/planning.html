@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .center {
+            margin: 0;
+            position: relative;
+        }
+
+        .planning-container {
+            height: 100%;
+            margin: 0;
+        }
+
+        .team-online-container {
+            grid-column: 1 / span 1;
+            width: 0.1px;
+        }
+
+        .vote-cell {
+            text-align: center;
+        }
+
+        #team-list {
+            font-family: Arial, Helvetica, sans-serif;
+            border-collapse: collapse;
+            width: 50%;
+            align-content: center;
+
+        }
+
+        #team-list td,
+        #team-list th {
+            border: 1px solid #ddd;
+            padding: 8px;
+            width: 20%;
+        }
+
+        #team-list tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        #team-list tr:hover {
+            background-color: #ddd;
+        }
+
+        #team-list th {
+            padding-top: 12px;
+            padding-bottom: 12px;
+            text-align: left;
+            background-color: #00C6C1;
+            color: white;
+            font-size: x-large;
+            font-weight: bolder;
+            text-align: center;
+        }
+
+        .grid-container {
+            display: grid;
+            gap: 5px;
+            padding: 10px;
+        }
+
+        .grid-container>div {
+            padding: 20px 0;
+        }
+
+        .cards-menu {
+            grid-column: 1 / span 2;
+            background-color: #00C6C1;
+        }
+
+        .resume-container {
+            background-color: #ddd;
+            grid-column: 2 / span 1;
+            width: 100%;
+        }
+
+        .horizontal-align {
+            margin: 0;
+            position: absolute;
+            top: 50%;
+            -ms-transform: translateX(-50%);
+            transform: translateX(-50%);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="planning-container">
+
+
+        <div class="grid-container ">
+
+            <div class="team-online-container">
+                2
+                <table id="team-list">
+                    <tr>
+                        <th>User</th>
+                        <th>Vote</th>
+                    </tr>
+                    <!-- the ones fro server will be added here -->
+                </table>
+            </div>
+            <div class="resume-container">
+                
+            </div>
+            
+            <div class="cards-menu">
+                <div class="horizontal-align">
+                    <button class="card-button">1</button>
+                    <button class="card-button">2</button>
+                    <button class="card-button">3</button>
+                    <button class="card-button">5</button>
+                    <button class="card-button">?</button>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</body>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    var socket = io();
+    let usersList = [];
+
+    var teamList = document.getElementById('team-list');
+
+    socket.on('team', function (users) {
+        console.log('team')
+        for (const user of users) {
+            console.log(usersList)
+
+            if (!(usersList.indexOf(user.name) === -1)) continue;
+
+            var newTR = document.createElement('tr');
+            var newTDName = document.createElement('td');
+            var newTDVote = document.createElement('td');
+
+            newTDName.textContent = user.name;
+            newTDVote.textContent = 3//user.vote;
+            newTDVote.className = "vote-cell"
+            newTR.appendChild(newTDName);
+            newTR.appendChild(newTDVote);
+            teamList.appendChild(newTR);
+
+            usersList.push(user.name)
+        }
+
+    });
+</script>
+
+</html>

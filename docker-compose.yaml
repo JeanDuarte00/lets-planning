@@ -1,0 +1,42 @@
+version: '3'
+
+networks:
+  planningNet:
+    driver: bridge
+
+services:
+
+  lets_planning:
+    container_name: lets_planning
+    entrypoint: dockerize -wait tcp://database:3306 -timeout 300s -wait-retry-interval 10s docker-entrypoint.sh
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    volumes:
+      - ./:/usr/src/app
+    networks:
+      - planningNet
+    tty: true
+    ports:
+      - "3000:3000"
+    depends_on:
+      - database
+
+
+  database:
+    image: mysql:5.7
+    container_name: database
+    command: --innodb-use-native-aio=0
+    restart: always
+    tty: true
+    ports:
+      - 3306:3306
+    expose:
+      - "3306"
+    volumes:
+      - ./databaseFiles:/var/lib/mysql
+    environment:
+      - MYSQL_DATABASE=nodedb
+      - MYSQL_ROOT_PASSWORD=root      
+    networks:
+      - planningNet
