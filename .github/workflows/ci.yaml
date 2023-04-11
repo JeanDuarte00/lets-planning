@@ -8,4 +8,4 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 18
-      - run: npm install && node app/server.js
+      - run: cd app && npm install && node server.js
